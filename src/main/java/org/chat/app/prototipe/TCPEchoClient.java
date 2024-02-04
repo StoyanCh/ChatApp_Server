@@ -1,4 +1,4 @@
-package org.chat.app;
+package org.chat.app.prototipe;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -11,6 +11,8 @@ import java.util.Scanner;
 public class TCPEchoClient {
     private static InetAddress host;
     private static int PORT = 1230;
+
+    private static PrintWriter output;
 
     public static void main(String[] args) {
         try {
@@ -30,7 +32,7 @@ public class TCPEchoClient {
         try {
             link = new Socket(host,PORT);
             input = new Scanner(link.getInputStream());
-            PrintWriter output= new PrintWriter(link.getOutputStream(), true);
+            output= new PrintWriter(link.getOutputStream(), true);
             userEntry = new Scanner(System.in);
             String message, response;
             do{
@@ -55,4 +57,20 @@ public class TCPEchoClient {
 
         }
     }
+
+    public void sendCreateUserCommand(String firstName, String lastName, String email, String password, boolean status) {
+        String command = String.format("CREATE_USER:%s:%s:%s:%s:%s", firstName, lastName, email, password, status);
+        output.println(command);
+    }
+
+    public void sendUpdateUserCommand(int userId, String firstName, String lastName, String email, String password, boolean status) {
+        String command = String.format("UPDATE_USER:%d:%s:%s:%s:%s:%b", userId, firstName, lastName, email, password, status);
+        output.println(command);
+    }
+
+    public void sendDeleteUserCommand(int userId) {
+        String command = String.format("DELETE_USER:%d", userId);
+        output.println(command);
+    }
+
 }

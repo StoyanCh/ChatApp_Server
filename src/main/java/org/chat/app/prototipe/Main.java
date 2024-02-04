@@ -1,4 +1,4 @@
-package org.chat.app;
+package org.chat.app.prototipe;
 
 public class Main {
     public static void main(String[] args) {

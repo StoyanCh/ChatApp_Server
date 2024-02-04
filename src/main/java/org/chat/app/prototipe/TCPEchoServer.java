@@ -1,4 +1,6 @@
-package org.chat.app;
+package org.chat.app.prototipe;
+import org.chat.app.repository.UserRepository;
+import org.chat.app.repository.commadHandler.UserCommandHandler;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -9,6 +11,8 @@ import java.util.Scanner;
 public class TCPEchoServer {
     private static ServerSocket serverSocket;
     private static final int PORT = 1230;
+
+    private UserRepository userRepository;
     public static void main(String[] args) {
 
         System.out.println("\nOpening port...");
@@ -55,5 +59,16 @@ public class TCPEchoServer {
                 System.exit(1);
             }
         }
+    }
+
+    private final UserCommandHandler commandHandler;
+
+    public TCPEchoServer(UserRepository userRepository) {
+        this.commandHandler = new UserCommandHandler(userRepository);
+    }
+
+    // При получаване на команда от клиента:
+    public void onCommandReceived(String command) {
+        commandHandler.handleCommand(command);
     }
 }
