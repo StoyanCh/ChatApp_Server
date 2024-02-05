@@ -2,17 +2,18 @@ package org.chat.app.model;
 import javax.persistence.*;
 import java.util.List;
 
-@ Entity
+@Entity
 public class UserConversation {
     @Id
+    @Column(name = "userConversationId")
     private int userConversationId;
 
     @ManyToOne
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "conversationId")
+    @JoinColumn(name = "conversationid")
     private Conversation conversation;
 
     @OneToMany(mappedBy = "userConversation")

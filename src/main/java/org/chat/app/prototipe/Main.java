@@ -1,5 +1,4 @@
 package org.chat.app.prototipe;
-
 public class Main {
     public static void main(String[] args) {
         // Start the server in a new thread
@@ -21,7 +20,7 @@ public class Main {
         // Start the client in a new thread
         new Thread(() -> {
             try {
-                TCPEchoClient.main(args);
+                TCPEchoClient.main(args);  // Променете това
             } catch (Exception e) {
                 e.printStackTrace();
             }

@@ -1,76 +1,68 @@
 package org.chat.app.prototipe;
-
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.InetAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
-import java.util.Locale;
 import java.util.Scanner;
 
 public class TCPEchoClient {
-    private static InetAddress host;
-    private static int PORT = 1230;
+    private Socket socket;
+    private PrintWriter output;
 
-    private static PrintWriter output;
-
-    public static void main(String[] args) {
-        try {
-            host = InetAddress.getLocalHost();
-        }catch (UnknownHostException e){
-            System.out.println("HOst ID not found");
-            System.exit(1);
-        }
-
-        accessServer();
+    public TCPEchoClient(String serverAddress, int serverPort) throws IOException {
+        this.socket = new Socket(serverAddress, serverPort);
+        this.output = new PrintWriter(socket.getOutputStream(), true);
     }
 
-    private static void accessServer(){
-        Socket link = null;
-        Scanner input = null;
-        Scanner userEntry = null;
-        try {
-            link = new Socket(host,PORT);
-            input = new Scanner(link.getInputStream());
-            output= new PrintWriter(link.getOutputStream(), true);
-            userEntry = new Scanner(System.in);
-            String message, response;
-            do{
-                System.out.println("Enter message: ");
-                message = userEntry.nextLine();
-                output.println(message);
-                response = input.nextLine();
-                System.out.println("SERVER: " + response);
-            }while (!message.equals("*CLOSE*"));
-        }catch (IOException e){
-            e.printStackTrace();
-        }finally {
-            System.out.println("Closing connection");
-            input.close();
-            userEntry.close();
-            try {
-                link.close();
-            }catch (IOException e){
-                System.out.println("Unable to disconnect");
-                System.exit(1);
-            }
-
-        }
+    public void sendCommand(String command) {
+        output.println(command);
     }
 
     public void sendCreateUserCommand(String firstName, String lastName, String email, String password, boolean status) {
         String command = String.format("CREATE_USER:%s:%s:%s:%s:%s", firstName, lastName, email, password, status);
-        output.println(command);
+        sendCommand(command);
     }
 
     public void sendUpdateUserCommand(int userId, String firstName, String lastName, String email, String password, boolean status) {
         String command = String.format("UPDATE_USER:%d:%s:%s:%s:%s:%b", userId, firstName, lastName, email, password, status);
-        output.println(command);
+        sendCommand(command);
     }
 
     public void sendDeleteUserCommand(int userId) {
         String command = String.format("DELETE_USER:%d", userId);
-        output.println(command);
+        sendCommand(command);
     }
 
+    public void sendCreateConversationCommand(String conversationName) {
+        String command = String.format("CREATE_CONVERSATION:%s", conversationName);
+        sendCommand(command);
+    }
+
+    public void sendDeleteConversationCommand(int conversationId) {
+        String command = String.format("DELETE_CONVERSATION:%d", conversationId);
+        sendCommand(command);
+    }
+
+    public void sendCreateMessageCommand(int senderId, int receiverId, int conversationId, String messageContent) {
+        String command = String.format("CREATE_MESSAGE:%d:%d:%d:%s", senderId, receiverId, conversationId, messageContent);
+        sendCommand(command);
+    }
+
+    public void sendDeleteMessageCommand(int messageId) {
+        String command = String.format("DELETE_MESSAGE:%d", messageId);
+        sendCommand(command);
+    }
+
+    public static void main(String[] args) throws IOException {
+        TCPEchoClient client = new TCPEchoClient("localhost", 1230);
+
+        client.sendCreateUserCommand("John", "Doe", "john.doe@example.com", "password123", true);
+        client.sendUpdateUserCommand(1, "Jane", "Doe", "jane.doe@example.com", "password123", false);
+        client.sendDeleteUserCommand(1);
+
+        client.sendCreateConversationCommand("My Conversation");
+        client.sendDeleteConversationCommand(1);
+
+        client.sendCreateMessageCommand(1, 2, 1, "Hello, world!");
+        client.sendDeleteMessageCommand(1);
+    }
 }

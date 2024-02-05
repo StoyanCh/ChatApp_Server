@@ -7,7 +7,7 @@ public class Friend {
     private long friendId;
     private long userId;
     @ManyToOne
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "user_id")
     private User user;
 
     public long getFriendId() {

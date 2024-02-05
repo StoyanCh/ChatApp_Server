@@ -1,5 +1,9 @@
 package org.chat.app.prototipe;
+import org.chat.app.repository.ConversationRepository;
+import org.chat.app.repository.MessageRepository;
 import org.chat.app.repository.UserRepository;
+import org.chat.app.repository.commadHandler.ConversationCommandHandler;
+import org.chat.app.repository.commadHandler.MessageCommandHandler;
 import org.chat.app.repository.commadHandler.UserCommandHandler;
 
 import java.io.IOException;
@@ -12,7 +16,6 @@ public class TCPEchoServer {
     private static ServerSocket serverSocket;
     private static final int PORT = 1230;
 
-    private UserRepository userRepository;
     public static void main(String[] args) {
 
         System.out.println("\nOpening port...");
@@ -61,14 +64,41 @@ public class TCPEchoServer {
         }
     }
 
-    private final UserCommandHandler commandHandler;
+    private UserRepository userRepository;
+    private ConversationRepository conversationRepository;
+    private MessageRepository messageRepository;
 
-    public TCPEchoServer(UserRepository userRepository) {
-        this.commandHandler = new UserCommandHandler(userRepository);
+    private final UserCommandHandler userCommandHandler;
+    private final ConversationCommandHandler conversationCommandHandler;
+    private final MessageCommandHandler messageCommandHandler;
+
+    public TCPEchoServer(UserRepository userRepository, ConversationRepository conversationRepository, MessageRepository messageRepository) {
+        this.userCommandHandler = new UserCommandHandler(userRepository);
+        this.conversationCommandHandler = new ConversationCommandHandler(conversationRepository);
+        this.messageCommandHandler = new MessageCommandHandler(messageRepository);
     }
 
     // При получаване на команда от клиента:
     public void onCommandReceived(String command) {
-        commandHandler.handleCommand(command);
+        String[] parts = command.split(":");
+        String commandType = parts[0];
+
+        switch (commandType) {
+            case "CREATE_USER":
+            case "UPDATE_USER":
+            case "DELETE_USER":
+                userCommandHandler.handleCommand(command);
+                break;
+            case "CREATE_CONVERSATION":
+            case "DELETE_CONVERSATION":
+                conversationCommandHandler.handleCommand(command);
+                break;
+            case "CREATE_MESSAGE":
+            case "DELETE_MESSAGE":
+                messageCommandHandler.handleCommand(command);
+                break;
+            default:
+                System.out.println("Unknown command: " + commandType);
+        }
     }
 }

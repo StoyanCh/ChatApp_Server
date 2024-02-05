@@ -11,9 +11,9 @@ public class User {
     private String password;
     private boolean status;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user_")
     private List<Friend> friends;
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user_")
     private List<UserConversation> userConversations;
 
     public int getUserId() {

@@ -22,7 +22,7 @@ public class Message {
     private User receiver;
 
     @ManyToOne
-    @JoinColumn(name = "userConversationId")
+    @JoinColumn(name = "conversationId")
     private UserConversation userConversation;
 
     public int getMessageId() {
