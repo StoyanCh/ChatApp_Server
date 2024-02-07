@@ -1,5 +1,6 @@
 package org.chat.app.server;
 import org.chat.app.database.DBConnection;
+import org.chat.app.database.sqlCommands.NewConvoSQLCommand;
 import org.chat.app.database.sqlCommands.UserSQLCommand;
 
 import java.io.IOException;
@@ -29,7 +30,10 @@ public class TCPEchoServer {
             //userSQLCommand.createUser("Петър", "Драганов", "draganov.P@gmail.com", "password123");
             //userSQLCommand.updateUser("Петър","Драганов","password123","draganov.P123@gmail.com");
             //userSQLCommand.UpdateUserStatus(true,"draganov.P123@gmail.com","password123");
-            userSQLCommand.userLogIn("draganov.P123@gmail.com","password123");
+            //userSQLCommand.userLogIn("draganov.P123@gmail.com","password123");
+            NewConvoSQLCommand newConvoSQLCommand = new NewConvoSQLCommand(conn);
+            //newConvoSQLCommand.createConversation("Хииии");
+            //newConvoSQLCommand.createUserConversation(6,4,5);
             do{
                 handle();
             }while (true);
