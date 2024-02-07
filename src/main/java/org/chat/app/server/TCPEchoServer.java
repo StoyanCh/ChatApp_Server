@@ -28,7 +28,8 @@ public class TCPEchoServer {
             UserSQLCommand userSQLCommand = new UserSQLCommand(conn);
             //userSQLCommand.createUser("Петър", "Драганов", "draganov.P@gmail.com", "password123");
             //userSQLCommand.updateUser("Петър","Драганов","password123","draganov.P123@gmail.com");
-            userSQLCommand.UpdateUserStatus(true,"draganov.P123@gmail.com","password123");
+            //userSQLCommand.UpdateUserStatus(true,"draganov.P123@gmail.com","password123");
+            userSQLCommand.userLogIn("draganov.P123@gmail.com","password123");
             do{
                 handle();
             }while (true);

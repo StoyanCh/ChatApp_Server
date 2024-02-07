@@ -65,7 +65,7 @@ public class UserSQLCommand {
         }
     }
 
-    public boolean userLogIn(String email, String password) {
+    public void userLogIn(String email, String password) {
         String sql = "SELECT * FROM chatappdb_schema.User_ WHERE email = ? AND password = ?";
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, email);
@@ -74,13 +74,12 @@ public class UserSQLCommand {
             ResultSet rs = pstmt.executeQuery();
 
             if (rs.next()) {
-                return true;  // User found
+
+                System.out.println("User is logged");
             } else {
-                return false; // User not found
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
-            return false;
         }
     }
 
