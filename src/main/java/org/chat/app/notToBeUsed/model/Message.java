@@ -1,4 +1,4 @@
-package org.chat.app.model;
+package org.chat.app.notToBeUsed.model;
 import javax.persistence.*;
 import java.sql.Timestamp;
 @Entity
@@ -93,23 +93,7 @@ public class Message {
         return sender;
     }
 
-    public void setSender(User sender) {
-        this.sender = sender;
-    }
-
-    public User getReceiver() {
-        return receiver;
-    }
-
-    public void setReceiver(User receiver) {
-        this.receiver = receiver;
-    }
-
     public UserConversation getUserConversation() {
         return userConversation;
-    }
-
-    public void setUserConversation(UserConversation userConversation) {
-        this.userConversation = userConversation;
     }
 }

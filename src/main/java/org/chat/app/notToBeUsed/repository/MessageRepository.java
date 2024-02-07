@@ -1,6 +1,6 @@
-package org.chat.app.repository;
+package org.chat.app.notToBeUsed.repository;
 
-import org.chat.app.model.Message;
+import org.chat.app.notToBeUsed.model.Message;
 
 import java.util.List;
 import java.util.Optional;

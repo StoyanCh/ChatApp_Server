@@ -1,4 +1,4 @@
-package org.chat.app.model;
+package org.chat.app.notToBeUsed.model;
 
 import javax.persistence.*;
 @Entity
@@ -24,13 +24,5 @@ public class Friend {
 
     public void setUserId(long userId) {
         this.userId = userId;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 }

@@ -1,20 +1,20 @@
-package org.chat.app.model;
+package org.chat.app.notToBeUsed.model;
 import javax.persistence.*;
 import java.util.List;
 @Entity
-public class User {
-    @Id
-    private int userId;
-    private String firstName;
-    private String lastName;
-    private String email;
-    private String password;
-    private boolean status;
+    public class User {
+        @Id
+        private int userId;
+        private String firstName;
+        private String lastName;
+        private String email;
+        private String password;
+        private boolean status;
 
-    @OneToMany(mappedBy = "user_")
-    private List<Friend> friends;
-    @OneToMany(mappedBy = "user_")
-    private List<UserConversation> userConversations;
+        @OneToMany(mappedBy = "user_")
+        private List<Friend> friends;
+        @OneToMany(mappedBy = "user_")
+        private List<UserConversation> userConversations;
 
     public int getUserId() {
         return userId;

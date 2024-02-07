@@ -1,6 +1,6 @@
-package org.chat.app.repository;
+package org.chat.app.notToBeUsed.repository;
 
-import org.chat.app.model.User;
+import org.chat.app.notToBeUsed.model.User;
 
 import java.util.Optional;
 

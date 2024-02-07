@@ -1,4 +1,4 @@
-package org.chat.app.prototipe;
+package org.chat.app.server;
 public class Main {
     public static void main(String[] args) {
         // Start the server in a new thread
