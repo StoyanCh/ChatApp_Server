@@ -1,75 +1,119 @@
 package org.chat.app.server;
-import org.chat.app.database.DBConnection;
-import org.chat.app.database.sqlCommands.NewConvoSQLCommand;
-import org.chat.app.database.sqlCommands.UserSQLCommand;
+
+import org.chat.app.server.database.DBConnection;
+import org.chat.app.server.sqlCommands.UserSQLCommand;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.sql.Connection;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Scanner;
 
 public class TCPEchoServer {
     private static ServerSocket serverSocket;
     private static final int PORT = 1230;
+    private static UserSQLCommand userSQLCommand; // Make userSQLCommand a static variable
+    private static Connection connection;
 
     public static void main(String[] args) {
         DBConnection connect = new DBConnection();
-        Connection conn = connect.connection("ChatAppDB","postgres","Kurama279");
-        if(conn != null) {
+        connection = connect.connection("ChatAppDB","postgres","Kurama279","chatappdb_schema");
+        if(connection != null) {
             System.out.println("\nOpening port...");
+
             try {
                 serverSocket = new ServerSocket(PORT);
             } catch (IOException e) {
                 System.out.println("\nUnable to attach port...");
                 System.exit(1);
             }
+            userSQLCommand = new UserSQLCommand(connection);
 
-            UserSQLCommand userSQLCommand = new UserSQLCommand(conn);
-            //userSQLCommand.createUser("Петър", "Драганов", "draganov.P@gmail.com", "password123");
-            //userSQLCommand.updateUser("Петър","Драганов","password123","draganov.P123@gmail.com");
-            //userSQLCommand.UpdateUserStatus(true,"draganov.P123@gmail.com","password123");
-            //userSQLCommand.userLogIn("draganov.P123@gmail.com","password123");
-            NewConvoSQLCommand newConvoSQLCommand = new NewConvoSQLCommand(conn);
-            //newConvoSQLCommand.createConversation("Хииии");
-            //newConvoSQLCommand.createUserConversation(6,4,5);
-            do{
+            do {
                 handle();
-            }while (true);
+            } while (true);
         }
     }
 
-    private static void handle(){
+    private static void handle() {
         Socket link = null;
-        Scanner input = null;
-
         try {
             link = serverSocket.accept();
-            input = new Scanner(link.getInputStream());
+            Scanner input = new Scanner(link.getInputStream());
             PrintWriter output = new PrintWriter(link.getOutputStream(), true);
+
             int numMessages = 0;
+            String message = "";
 
-            String message = input.nextLine();
-
-            while (!message.equals("*CLOSE*")){
-                System.out.println("\nMessage received...");
+            while (input.hasNextLine() && !(message = input.nextLine()).equals("*CLOSE*")) {
+                processMessage(message, numMessages, output);
                 numMessages++;
-                output.println("Message "+ numMessages+" : "+ message);
-                message = input.nextLine();
             }
+
             output.println("Messages received: " + numMessages);
-        }catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             System.out.println("\nClose connection...");
-            input.close();
-            try {
-                link.close();
-            }catch (IOException e){
-                System.out.println("\nUnable to close...");
-                System.exit(1);
+            if (link != null) {
+                try {
+                    link.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
+
+    private static void processMessage(String message, int numMessages, PrintWriter output) {
+        System.out.println("\nMessage received...");
+        Timestamp timestamp = new Timestamp(new Date().getTime());
+        System.out.println(timestamp);
+
+        if (message.startsWith("createUser:")) {
+            createUser(message);
+        }
+        if (message.startsWith("userLogIn:")) {
+            userLogIn(message);
+        }
+
+        output.println("Message " + numMessages + " : " + message);
+        System.out.println("Message " + message);
+    }
+
+    private static void userLogIn(String message) {
+
+        String[] parts = message.split(":")[1].split(",");
+        String email = parts[0];
+        String password = parts[1];
+
+        boolean loginSuccessful = userSQLCommand.userLogIn(email, password);
+        if (loginSuccessful) {
+            // Потребителят е влязъл успешно, актуализирайте статуса му
+            String statusUser = "status:true:" + email + "," + password;
+            UpdateUserStatus(statusUser);
+        }
+    }
+    private static void UpdateUserStatus(String message) {
+        String[] parts = message.split(":")[1].split(",");
+        boolean status = Boolean.parseBoolean(parts[0]);
+        String email = parts[1];
+        String password = parts[2];
+
+        userSQLCommand.UpdateUserStatus(status, email, password);
+    }
+
+    private static void createUser(String message) {
+        String[] parts = message.split(":")[1].split(",");
+        String firstName = parts[0];
+        String lastName = parts[1];
+        String email = parts[2];
+        String password = parts[3];
+
+        userSQLCommand.createUser(firstName, lastName, email, password);
+    }
+
 }

@@ -1,5 +1,6 @@
-package org.chat.app.database.sqlCommands;
+package org.chat.app.server.sqlCommands;
 
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.*;
 import java.sql.SQLException;
@@ -65,22 +66,20 @@ public class UserSQLCommand {
         }
     }
 
-    public void userLogIn(String email, String password) {
+    public boolean userLogIn(String email, String password) {
         String sql = "SELECT * FROM chatappdb_schema.User_ WHERE email = ? AND password = ?";
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, email);
             pstmt.setString(2, password);
-
             ResultSet rs = pstmt.executeQuery();
-
             if (rs.next()) {
-
                 System.out.println("User is logged");
-            } else {
+                return true;
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
+        return false;
     }
 
 }
