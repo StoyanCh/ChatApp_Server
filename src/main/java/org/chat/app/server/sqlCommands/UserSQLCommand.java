@@ -1,4 +1,4 @@
-package org.chat.app.database.sqlCommands;
+package org.chat.app.server.sqlCommands;
 
 import java.sql.Connection;
 import java.sql.*;
@@ -20,7 +20,7 @@ public class UserSQLCommand {
     }
 
     public void createUser(String firstName, String lastName, String email, String password) {
-        String sql = "INSERT INTO chatappdb_schema.User_(FirstName, LastName, Email, Password) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO User_(FirstName, LastName, Email, Password) VALUES (?, ?, ?, ?)";
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, firstName);
@@ -70,11 +70,8 @@ public class UserSQLCommand {
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, email);
             pstmt.setString(2, password);
-
             ResultSet rs = pstmt.executeQuery();
-
             if (rs.next()) {
-
                 System.out.println("User is logged");
             } else {
             }
@@ -82,5 +79,4 @@ public class UserSQLCommand {
             System.out.println(e.getMessage());
         }
     }
-
 }

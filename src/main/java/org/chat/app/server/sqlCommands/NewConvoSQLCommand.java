@@ -1,4 +1,4 @@
-package org.chat.app.database.sqlCommands;
+package org.chat.app.server.sqlCommands;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
